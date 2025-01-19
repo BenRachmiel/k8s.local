@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/BenRachmiel/k8s.local.git
     targetRevision: HEAD
-    path: flannel/kube-flannel.yaml
+    path: flannel
   destination:
     server: https://kubernetes.default.svc
     namespace: kube-flannel
