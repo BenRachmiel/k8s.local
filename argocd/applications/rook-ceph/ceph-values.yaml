@@ -3,7 +3,6 @@ operatorNamespace: rook-ceph
 cephClusterSpec:
   cephVersion:
     image: nexus.local:8122/ceph/ceph:v19.2.0
-    baseImage: nexus.local:8122/ceph/daemon-base:v19.2.0
   dataDirHostPath: /var/lib/rook
   mon:
     count: 3
@@ -107,7 +106,7 @@ dashboard:
     tls:
     - hosts:
         - ceph.k8s.local
-      secretName: ceph-dashboard-tls
+      secretName: ceph-dashboard-cert
     annotations:
       cert-manager.io/cluster-issuer: "default-issuer"
       nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"

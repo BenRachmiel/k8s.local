@@ -11,17 +11,17 @@ spec:
       chart: rook-ceph
       helm:
         valueFiles:
-          - rook-values.yaml
+          - $values/argocd/applications/rook-ceph/rook-values.yaml
     - repoURL: https://nexus.local/repository/rook-release-helm-proxy/
       targetRevision: v1.16.1
       chart: rook-ceph-cluster
       helm:
         valueFiles:
-          - ceph-values.yaml
+          - $values/argocd/applications/rook-ceph/ceph-values.yaml
     - repoURL: https://github.com/BenRachmiel/k8s.local
       targetRevision: HEAD
-      path: argocd/applications/rook-ceph
       ref: values
+      path: argocd/applications/rook-ceph
       directory:
         include: "ceph-dashboard-*.yaml"
   destination:
