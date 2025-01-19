@@ -11,7 +11,7 @@ spec:
       chart: gpu-operator
       helm:
         valueFiles:
-          - nvidia-operator-values.yaml
+          - $values/argocd/applications/gpu-operator/nvidia-operator-values.yaml
     - repoURL: https://github.com/BenRachmiel/k8s.local
       targetRevision: HEAD
       path: ./
