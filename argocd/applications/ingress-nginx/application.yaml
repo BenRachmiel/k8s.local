@@ -11,11 +11,13 @@ spec:
       chart: ingress-nginx
       helm:
         valueFiles:
-          - $values/nginx-values.yaml
+          - values.yaml
     - repoURL: https://github.com/BenRachmiel/k8s.local
       targetRevision: HEAD
-      path: infrastructure/networking/ingress-nginx
+      path: ./
       ref: values
+      directory:
+        include: "ingress-cert.yaml"
   destination:
     server: https://kubernetes.default.svc
     namespace: ingress-nginx
