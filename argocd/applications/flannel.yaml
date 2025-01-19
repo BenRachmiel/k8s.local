@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: flannel-cni
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/BenRachmiel/k8s.local.git
+    targetRevision: HEAD
+    path: infrastructure/networking/flannel
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kube-flannel
+  syncPolicy:
+    automated:
+      prune: true  # Automatically delete resources that no longer exist in Git
+      selfHeal: true  # Automatically sync if there's a difference between live and Git state
+    syncOptions:
+      - CreateNamespace=true  # Automatically create the kube-flannel namespace if it doesn't exist
+  ignoreDifferences:  # Ignore differences in these fields since they're managed by Kubernetes
+    - group: apps
+      kind: DaemonSet
+      jsonPointers:
+        - /metadata/annotations/deprecated.daemonset.template.generation
+        - /metadata/generation
+        - /status
