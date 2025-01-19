@@ -1,0 +1,89 @@
+global:
+  imageRegistry: "nexus.local:8122"
+
+prometheus:
+  prometheusSpec:
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: ceph-filesystem
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 50Gi
+    additionalScrapeConfigs:
+    - job_name: gpu-metrics
+      scrape_interval: 1s
+      metrics_path: /metrics
+      scheme: http
+      kubernetes_sd_configs:
+      - role: endpoints
+        namespaces:
+          names:
+          - gpu-operator
+      relabel_configs:
+      - source_labels: [__meta_kubernetes_endpoints_name]
+        action: drop
+        regex: .*-node-feature-discovery-master
+      - source_labels: [__meta_kubernetes_pod_node_name]
+        action: replace
+        target_label: kubernetes_node
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: "default-issuer"
+    hosts: 
+      - prometheus.k8s.local
+    paths:
+      - /
+    pathType: Prefix
+    tls:
+      - secretName: prometheus-tls
+        hosts:
+          - prometheus.k8s.local
+
+alertmanager:
+  alertmanagerSpec:
+    storage:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: ceph-filesystem
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 10Gi
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: "default-issuer"
+    hosts:
+      - alertmanager.k8s.local
+    paths:
+      - /
+    pathType: Prefix
+    tls:
+      - secretName: alertmanager-tls
+        hosts:
+          - alertmanager.k8s.local
+
+grafana:
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: "default-issuer"
+    hosts:
+      - grafana.k8s.local
+    paths:
+      - /
+    pathType: Prefix
+    tls:
+      - secretName: grafana-tls
+        hosts:
+          - grafana.k8s.local
+  persistence:
+    enabled: true
+    storageClassName: ceph-filesystem
+    size: 10Gi

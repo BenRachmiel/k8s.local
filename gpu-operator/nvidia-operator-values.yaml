@@ -1,0 +1,62 @@
+# Custom values.yaml for NVIDIA GPU Operator with Nexus proxy
+# All repositories redirected to https://nexus.local:8122
+
+validator:
+  repository: nexus.local:8122/nvidia/cloud-native
+  imagePullPolicy: IfNotPresent
+
+operator:
+  repository: nexus.local:8122/nvidia
+  initContainer:
+    repository: nexus.local:8122/nvidia
+
+driver:
+  repository: nexus.local:8122/nvidia
+  manager:
+    repository: nexus.local:8122/nvidia/cloud-native
+
+toolkit:
+  repository: nexus.local:8122/nvidia/k8s
+
+devicePlugin:
+  repository: nexus.local:8122/nvidia
+
+dcgm:
+  serviceMonitor:
+    enabled: true
+  repository: nexus.local:8122/nvidia/cloud-native
+
+dcgmExporter:
+  repository: nexus.local:8122/nvidia/k8s
+
+gfd:
+  repository: nexus.local:8122/nvidia
+
+migManager:
+  repository: nexus.local:8122/nvidia/cloud-native
+
+nodeStatusExporter:
+  repository: nexus.local:8122/nvidia/cloud-native
+
+gds:
+  repository: nexus.local:8122/nvidia/cloud-native
+
+gdrcopy:
+  repository: nexus.local:8122/nvidia/cloud-native
+
+vgpuDeviceManager:
+  repository: nexus.local:8122/nvidia/cloud-native
+
+vfioManager:
+  repository: nexus.local:8122/nvidia
+  driverManager:
+    repository: nexus.local:8122/nvidia/cloud-native
+
+kataManager:
+  repository: nexus.local:8122/nvidia/cloud-native
+
+sandboxDevicePlugin:
+  repository: nexus.local:8122/nvidia
+
+ccManager:
+  repository: nexus.local:8122/nvidia/cloud-native

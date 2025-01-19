@@ -1,0 +1,6 @@
+config:
+  clients:
+    - url: http://loki-gateway.monitoring.svc.cluster.local/loki/api/v1/push
+
+global:
+  imageRegistry: "nexus.local:8122"

@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: ceph-dashboard-cert
+  namespace: rook-ceph
+spec:
+  secretName: ceph-dashboard-tls
+  issuerRef:
+    name: default-issuer
+    kind: ClusterIssuer
+  dnsNames:
+    - ceph.k8s.local

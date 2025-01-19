@@ -1,0 +1,128 @@
+operatorNamespace: rook-ceph
+
+cephClusterSpec:
+  cephVersion:
+    image: nexus.local:8122/ceph/ceph:v19.2.0
+    baseImage: nexus.local:8122/ceph/daemon-base:v19.2.0
+  dataDirHostPath: /var/lib/rook
+  mon:
+    count: 3
+    allowMultiplePerNode: false
+  network:
+    provider: host
+  crashCollector:
+    disable: false
+  storage:
+    useAllNodes: false
+    useAllDevices: false
+    nodes:
+    - name: "worker1"
+      devices:
+      - name: "/dev/sdb"  # Replace with your actual NVMe device
+      config:
+        storeType: bluestore
+        crushRoot: "worker1"
+    - name: "worker2"
+      devices:
+      - name: "/dev/sdb"  # Replace with your actual NVMe device
+      config:
+        storeType: bluestore
+        crushRoot: "worker2"
+    - name: "workerhdd1"
+      devices:
+      - name: "/dev/sdb"  # Replace with your actual HDD device
+      config:
+        storeType: bluestore
+        crushRoot: "workerhdd1"
+
+# Storage class definitions
+cephBlockPools:
+- name: nvme-pool-worker1
+  spec:
+    failureDomain: host
+    crushRoot: "worker1"
+    replicated:
+      size: 1  # Local storage
+  storageClass:
+    enabled: true
+    name: rook-ceph-nvme1
+    isDefault: false
+    reclaimPolicy: Delete
+    allowVolumeExpansion: true
+    parameters:
+      pool: nvme-pool-worker1
+      crushRoot: "worker1"
+      imageFormat: "2"
+      imageFeatures: layering
+
+- name: nvme-pool-worker2
+  spec:
+    failureDomain: host
+    crushRoot: "worker2"
+    replicated:
+      size: 1
+  storageClass:
+    enabled: true
+    name: rook-ceph-nvme2
+    isDefault: false
+    reclaimPolicy: Delete
+    allowVolumeExpansion: true
+    parameters:
+      pool: nvme-pool-worker2
+      crushRoot: "worker2"
+      imageFormat: "2"
+      imageFeatures: layering
+
+- name: hdd-pool
+  spec:
+    failureDomain: host
+    crushRoot: "workerhdd1"
+    replicated:
+      size: 1
+  storageClass:
+    enabled: true
+    name: rook-ceph-hdd
+    isDefault: false
+    reclaimPolicy: Delete
+    allowVolumeExpansion: true
+    parameters:
+      pool: hdd-pool
+      imageFormat: "2"
+      imageFeatures: layering
+
+# Enable monitoring
+monitoring:
+  enabled: false
+
+# Dashboard configuration with SSL
+dashboard:
+  enabled: true
+  ssl: true
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    host:
+      name: ceph.k8s.local
+      path: /
+    tls:
+    - hosts:
+        - ceph.k8s.local
+      secretName: ceph-dashboard-tls
+    annotations:
+      cert-manager.io/cluster-issuer: "default-issuer"
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+      nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+
+# Enable the Ceph toolbox for debugging
+toolbox:
+  enabled: true
+  resources:
+    limits:
+      memory: "512Mi"
+    requests:
+      cpu: "100m"
+      memory: "128Mi"
+
+# Additional settings
+allowMultipleFilesystems: true

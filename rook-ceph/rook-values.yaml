@@ -1,0 +1,17 @@
+image:
+  repository: nexus.local:8122/rook/ceph
+  pullPolicy: IfNotPresent
+
+csi:
+  cephcsi:
+    repository: nexus.local:8122/cephcsi/cephcsi
+  provisioner:
+    repository: nexus.local:8122/sig-storage/csi-provisioner
+  attacher:
+    repository: nexus.local:8122/sig-storage/csi-attacher
+  snapshotter:
+    repository: nexus.local:8122/sig-storage/csi-snapshotter
+  resizer:
+    repository: nexus.local:8122/sig-storage/csi-resizer
+  registrar:
+    repository: nexus.local:8122/sig-storage/csi-node-driver-registrar
