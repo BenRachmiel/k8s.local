@@ -15,10 +15,12 @@ spec:
     namespace: metallb-system
   syncPolicy:
     automated:
-      prune: true
+      prune: false  # Don't automatically delete resources
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      - RespectIgnoreDifferences=true  # Respect the ignore differences configuration
+      - Replace=false  # Don't replace existing resources
   ignoreDifferences:
     # For all resources
     - group: "*"
