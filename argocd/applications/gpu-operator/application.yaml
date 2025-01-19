@@ -5,13 +5,17 @@ metadata:
   namespace: argocd
 spec:
   project: default
-  source:
-    repoURL: https://nexus.local/repository/nvidia-helm-proxy/
-    chart: gpu-operator
-    targetRevision: v24.9.1
-    helm:
-      valueFiles:
-        - nvidia-operator-values.yaml
+  sources:
+    - repoURL: https://nexus.local/repository/nvidia-helm-proxy/
+      targetRevision: v24.9.1
+      chart: gpu-operator
+      helm:
+        valueFiles:
+          - nvidia-operator-values.yaml
+    - repoURL: https://github.com/BenRachmiel/k8s.local
+      targetRevision: HEAD
+      path: ./
+      ref: values
   destination:
     server: https://kubernetes.default.svc
     namespace: gpu-operator
