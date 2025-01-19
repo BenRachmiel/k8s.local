@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: rook-ceph-operator
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - repoURL: https://nexus.local/repository/rook-release-helm-proxy/
+      targetRevision: v1.16.1
+      chart: rook-ceph
+      helm:
+        valueFiles:
+          - rook-values.yaml
+    - repoURL: https://nexus.local/repository/rook-release-helm-proxy/
+      targetRevision: v1.16.1
+      chart: rook-ceph-cluster
+      helm:
+        valueFiles:
+          - ceph-values.yaml
+    - repoURL: https://github.com/BenRachmiel/k8s.local
+      targetRevision: HEAD
+      path: rook-ceph
+      ref: values
+      directory:
+        include: "ceph-dashboard-*.yaml"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: rook-ceph
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd-config
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/BenRachmiel/k8s.local.git
+    targetRevision: main
+    path: argocd
+    directory:
+      exclude: "applications/*"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+  # Ignoring some fields that ArgoCD might modify
+  ignoreDifferences:
+    - group: networking.k8s.io
+      kind: Ingress
+      jsonPointers:
+        - /status
+    - group: cert-manager.io
+      kind: Certificate
+      jsonPointers:
+        - /status
