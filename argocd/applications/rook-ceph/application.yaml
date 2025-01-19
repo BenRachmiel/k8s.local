@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: rook-ceph-operator
+  name: rook-ceph
   namespace: argocd
 spec:
   project: default
@@ -20,7 +20,7 @@ spec:
           - ceph-values.yaml
     - repoURL: https://github.com/BenRachmiel/k8s.local
       targetRevision: HEAD
-      path: rook-ceph
+      path: argocd/applications/rook-ceph
       ref: values
       directory:
         include: "ceph-dashboard-*.yaml"
