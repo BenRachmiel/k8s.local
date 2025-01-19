@@ -1,0 +1,1615 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      prometheus.io/port: "7472"
+      prometheus.io/scrape: "true"
+    creationTimestamp: "2025-01-17T00:15:50Z"
+    generateName: controller-5cd588c68b-
+    labels:
+      app: metallb
+      component: controller
+      pod-template-hash: 5cd588c68b
+    name: controller-5cd588c68b-t7h6t
+    namespace: metallb-system
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicaSet
+      name: controller-5cd588c68b
+      uid: 3e074520-bfd4-4297-8c56-db1e021a5934
+    resourceVersion: "754065"
+    uid: 7b14dd9b-08cc-4073-9c39-cfa4c68bed63
+  spec:
+    containers:
+    - args:
+      - --port=7472
+      - --log-level=info
+      - --tls-min-version=VersionTLS12
+      env:
+      - name: METALLB_ML_SECRET_NAME
+        value: memberlist
+      - name: METALLB_DEPLOYMENT
+        value: controller
+      image: nexus.local:8122/metallb/controller:v0.14.9
+      imagePullPolicy: IfNotPresent
+      livenessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /metrics
+          port: monitoring
+          scheme: HTTP
+        initialDelaySeconds: 10
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      name: controller
+      ports:
+      - containerPort: 7472
+        name: monitoring
+        protocol: TCP
+      - containerPort: 9443
+        name: webhook-server
+        protocol: TCP
+      readinessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /metrics
+          port: monitoring
+          scheme: HTTP
+        initialDelaySeconds: 10
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      resources: {}
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+          - all
+        readOnlyRootFilesystem: true
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /tmp/k8s-webhook-server/serving-certs
+        name: cert
+        readOnly: true
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-cwpd2
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    nodeName: worker2
+    nodeSelector:
+      kubernetes.io/os: linux
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext:
+      fsGroup: 65534
+      runAsNonRoot: true
+      runAsUser: 65534
+    serviceAccount: controller
+    serviceAccountName: controller
+    terminationGracePeriodSeconds: 0
+    tolerations:
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
+    volumes:
+    - name: cert
+      secret:
+        defaultMode: 420
+        secretName: metallb-webhook-cert
+    - name: kube-api-access-cwpd2
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            expirationSeconds: 3607
+            path: token
+        - configMap:
+            items:
+            - key: ca.crt
+              path: ca.crt
+            name: kube-root-ca.crt
+        - downwardAPI:
+            items:
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+              path: namespace
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2025-01-18T19:54:21Z"
+      status: "True"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2025-01-18T19:54:19Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2025-01-18T19:54:32Z"
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2025-01-18T19:54:32Z"
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2025-01-18T19:54:19Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: containerd://47cecde1739f979388c98cf2f9aab967e123e9fb77d906b897436e79c5a0617c
+      image: nexus.local:8122/metallb/controller:v0.14.9
+      imageID: nexus.local:8122/metallb/controller@sha256:86261567e5ff03978893bf03ea865275283ad1e3f0f20dd342ed501b651fdf78
+      lastState: {}
+      name: controller
+      ready: true
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: "2025-01-18T19:54:21Z"
+      volumeMounts:
+      - mountPath: /tmp/k8s-webhook-server/serving-certs
+        name: cert
+        readOnly: true
+        recursiveReadOnly: Disabled
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-cwpd2
+        readOnly: true
+        recursiveReadOnly: Disabled
+    hostIP: 10.0.1.52
+    hostIPs:
+    - ip: 10.0.1.52
+    phase: Running
+    podIP: 172.16.1.131
+    podIPs:
+    - ip: 172.16.1.131
+    qosClass: BestEffort
+    startTime: "2025-01-18T19:54:19Z"
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      prometheus.io/port: "7472"
+      prometheus.io/scrape: "true"
+    creationTimestamp: "2025-01-15T02:08:44Z"
+    generateName: speaker-
+    labels:
+      app: metallb
+      component: speaker
+      controller-revision-hash: 6f9d8f7b7d
+      pod-template-generation: "1"
+    name: speaker-57mht
+    namespace: metallb-system
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DaemonSet
+      name: speaker
+      uid: 3cf4f4b2-3013-4b00-92c6-c9d71f7756e5
+    resourceVersion: "754429"
+    uid: 3c4ff543-7802-47fc-97a9-4653d193da5c
+  spec:
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchFields:
+            - key: metadata.name
+              operator: In
+              values:
+              - control-plane
+    containers:
+    - args:
+      - --port=7472
+      - --log-level=info
+      env:
+      - name: METALLB_NODE_NAME
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: spec.nodeName
+      - name: METALLB_POD_NAME
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: metadata.name
+      - name: METALLB_HOST
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: status.hostIP
+      - name: METALLB_ML_BIND_ADDR
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: status.podIP
+      - name: METALLB_ML_LABELS
+        value: app=metallb,component=speaker
+      - name: METALLB_ML_SECRET_KEY_PATH
+        value: /etc/ml_secret_key
+      image: nexus.local:8122/metallb/speaker:v0.14.9
+      imagePullPolicy: IfNotPresent
+      livenessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /metrics
+          port: monitoring
+          scheme: HTTP
+        initialDelaySeconds: 10
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      name: speaker
+      ports:
+      - containerPort: 7472
+        hostPort: 7472
+        name: monitoring
+        protocol: TCP
+      - containerPort: 7946
+        hostPort: 7946
+        name: memberlist-tcp
+        protocol: TCP
+      - containerPort: 7946
+        hostPort: 7946
+        name: memberlist-udp
+        protocol: UDP
+      readinessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /metrics
+          port: monitoring
+          scheme: HTTP
+        initialDelaySeconds: 10
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      resources: {}
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          add:
+          - NET_RAW
+          drop:
+          - ALL
+        readOnlyRootFilesystem: true
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /etc/ml_secret_key
+        name: memberlist
+        readOnly: true
+      - mountPath: /etc/metallb
+        name: metallb-excludel2
+        readOnly: true
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-ms26g
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    hostNetwork: true
+    nodeName: control-plane
+    nodeSelector:
+      kubernetes.io/os: linux
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext: {}
+    serviceAccount: speaker
+    serviceAccountName: speaker
+    terminationGracePeriodSeconds: 2
+    tolerations:
+    - effect: NoSchedule
+      key: node-role.kubernetes.io/master
+      operator: Exists
+    - effect: NoSchedule
+      key: node-role.kubernetes.io/control-plane
+      operator: Exists
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+    - effect: NoSchedule
+      key: node.kubernetes.io/disk-pressure
+      operator: Exists
+    - effect: NoSchedule
+      key: node.kubernetes.io/memory-pressure
+      operator: Exists
+    - effect: NoSchedule
+      key: node.kubernetes.io/pid-pressure
+      operator: Exists
+    - effect: NoSchedule
+      key: node.kubernetes.io/unschedulable
+      operator: Exists
+    - effect: NoSchedule
+      key: node.kubernetes.io/network-unavailable
+      operator: Exists
+    volumes:
+    - name: memberlist
+      secret:
+        defaultMode: 420
+        secretName: memberlist
+    - configMap:
+        defaultMode: 256
+        name: metallb-excludel2
+      name: metallb-excludel2
+    - name: kube-api-access-ms26g
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            expirationSeconds: 3607
+            path: token
+        - configMap:
+            items:
+            - key: ca.crt
+              path: ca.crt
+            name: kube-root-ca.crt
+        - downwardAPI:
+            items:
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+              path: namespace
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2025-01-18T19:54:02Z"
+      status: "True"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2025-01-15T02:08:44Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2025-01-18T19:54:43Z"
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2025-01-18T19:54:43Z"
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2025-01-15T02:08:44Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: containerd://a3151dc59801215d522e82b3421161bf1488a3bfaefd8748e4beb14db3afc536
+      image: nexus.local:8122/metallb/speaker:v0.14.9
+      imageID: nexus.local:8122/metallb/speaker@sha256:b09a1dfcf330938950b65115cd58f6989108c0c21d3c096040e7fe9a25a92993
+      lastState:
+        terminated:
+          containerID: containerd://df625514eacceb9ac95c0eaa81759b73f03f3858aa35b7088b952b44c039ee97
+          exitCode: 1
+          finishedAt: "2025-01-18T19:54:31Z"
+          reason: Error
+          startedAt: "2025-01-18T19:54:01Z"
+      name: speaker
+      ready: true
+      restartCount: 6
+      started: true
+      state:
+        running:
+          startedAt: "2025-01-18T19:54:32Z"
+      volumeMounts:
+      - mountPath: /etc/ml_secret_key
+        name: memberlist
+        readOnly: true
+        recursiveReadOnly: Disabled
+      - mountPath: /etc/metallb
+        name: metallb-excludel2
+        readOnly: true
+        recursiveReadOnly: Disabled
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-ms26g
+        readOnly: true
+        recursiveReadOnly: Disabled
+    hostIP: 10.0.1.50
+    hostIPs:
+    - ip: 10.0.1.50
+    phase: Running
+    podIP: 10.0.1.50
+    podIPs:
+    - ip: 10.0.1.50
+    qosClass: BestEffort
+    startTime: "2025-01-15T02:08:44Z"
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      prometheus.io/port: "7472"
+      prometheus.io/scrape: "true"
+    creationTimestamp: "2025-01-14T11:45:01Z"
+    generateName: speaker-
+    labels:
+      app: metallb
+      component: speaker
+      controller-revision-hash: 6f9d8f7b7d
+      pod-template-generation: "1"
+    name: speaker-g2s9x
+    namespace: metallb-system
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DaemonSet
+      name: speaker
+      uid: 3cf4f4b2-3013-4b00-92c6-c9d71f7756e5
+    resourceVersion: "755113"
+    uid: 70843a08-b045-412a-b14f-49cdc14e4f50
+  spec:
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchFields:
+            - key: metadata.name
+              operator: In
+              values:
+              - workerhdd1
+    containers:
+    - args:
+      - --port=7472
+      - --log-level=info
+      env:
+      - name: METALLB_NODE_NAME
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: spec.nodeName
+      - name: METALLB_POD_NAME
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: metadata.name
+      - name: METALLB_HOST
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: status.hostIP
+      - name: METALLB_ML_BIND_ADDR
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: status.podIP
+      - name: METALLB_ML_LABELS
+        value: app=metallb,component=speaker
+      - name: METALLB_ML_SECRET_KEY_PATH
+        value: /etc/ml_secret_key
+      image: nexus.local:8122/metallb/speaker:v0.14.9
+      imagePullPolicy: IfNotPresent
+      livenessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /metrics
+          port: monitoring
+          scheme: HTTP
+        initialDelaySeconds: 10
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      name: speaker
+      ports:
+      - containerPort: 7472
+        hostPort: 7472
+        name: monitoring
+        protocol: TCP
+      - containerPort: 7946
+        hostPort: 7946
+        name: memberlist-tcp
+        protocol: TCP
+      - containerPort: 7946
+        hostPort: 7946
+        name: memberlist-udp
+        protocol: UDP
+      readinessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /metrics
+          port: monitoring
+          scheme: HTTP
+        initialDelaySeconds: 10
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      resources: {}
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          add:
+          - NET_RAW
+          drop:
+          - ALL
+        readOnlyRootFilesystem: true
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /etc/ml_secret_key
+        name: memberlist
+        readOnly: true
+      - mountPath: /etc/metallb
+        name: metallb-excludel2
+        readOnly: true
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-mpnd8
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    hostNetwork: true
+    nodeName: workerhdd1
+    nodeSelector:
+      kubernetes.io/os: linux
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext: {}
+    serviceAccount: speaker
+    serviceAccountName: speaker
+    terminationGracePeriodSeconds: 2
+    tolerations:
+    - effect: NoSchedule
+      key: node-role.kubernetes.io/master
+      operator: Exists
+    - effect: NoSchedule
+      key: node-role.kubernetes.io/control-plane
+      operator: Exists
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+    - effect: NoSchedule
+      key: node.kubernetes.io/disk-pressure
+      operator: Exists
+    - effect: NoSchedule
+      key: node.kubernetes.io/memory-pressure
+      operator: Exists
+    - effect: NoSchedule
+      key: node.kubernetes.io/pid-pressure
+      operator: Exists
+    - effect: NoSchedule
+      key: node.kubernetes.io/unschedulable
+      operator: Exists
+    - effect: NoSchedule
+      key: node.kubernetes.io/network-unavailable
+      operator: Exists
+    volumes:
+    - name: memberlist
+      secret:
+        defaultMode: 420
+        secretName: memberlist
+    - configMap:
+        defaultMode: 256
+        name: metallb-excludel2
+      name: metallb-excludel2
+    - name: kube-api-access-mpnd8
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            expirationSeconds: 3607
+            path: token
+        - configMap:
+            items:
+            - key: ca.crt
+              path: ca.crt
+            name: kube-root-ca.crt
+        - downwardAPI:
+            items:
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+              path: namespace
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2025-01-18T19:54:58Z"
+      status: "True"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2025-01-14T11:45:01Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2025-01-18T19:55:52Z"
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2025-01-18T19:55:52Z"
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2025-01-14T11:45:01Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: containerd://701e8b64afd4bbc3bba6b24f958fad6f5c18e1d1df8efda35f799ca66162e1cb
+      image: nexus.local:8122/metallb/speaker:v0.14.9
+      imageID: nexus.local:8122/metallb/speaker@sha256:b09a1dfcf330938950b65115cd58f6989108c0c21d3c096040e7fe9a25a92993
+      lastState:
+        terminated:
+          containerID: containerd://b738e14470265e563b8e77a114cfd3115ec079e74c0f99abd8c9d4bab52bc47f
+          exitCode: 137
+          finishedAt: "2025-01-18T19:55:31Z"
+          reason: Error
+          startedAt: "2025-01-18T19:54:57Z"
+      name: speaker
+      ready: true
+      restartCount: 10
+      started: true
+      state:
+        running:
+          startedAt: "2025-01-18T19:55:40Z"
+      volumeMounts:
+      - mountPath: /etc/ml_secret_key
+        name: memberlist
+        readOnly: true
+        recursiveReadOnly: Disabled
+      - mountPath: /etc/metallb
+        name: metallb-excludel2
+        readOnly: true
+        recursiveReadOnly: Disabled
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-mpnd8
+        readOnly: true
+        recursiveReadOnly: Disabled
+    hostIP: 10.0.1.53
+    hostIPs:
+    - ip: 10.0.1.53
+    phase: Running
+    podIP: 10.0.1.53
+    podIPs:
+    - ip: 10.0.1.53
+    qosClass: BestEffort
+    startTime: "2025-01-14T11:45:01Z"
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      prometheus.io/port: "7472"
+      prometheus.io/scrape: "true"
+    creationTimestamp: "2025-01-13T09:39:54Z"
+    generateName: speaker-
+    labels:
+      app: metallb
+      component: speaker
+      controller-revision-hash: 6f9d8f7b7d
+      pod-template-generation: "1"
+    name: speaker-n6ckp
+    namespace: metallb-system
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DaemonSet
+      name: speaker
+      uid: 3cf4f4b2-3013-4b00-92c6-c9d71f7756e5
+    resourceVersion: "754687"
+    uid: ce7365eb-77d7-4525-9298-dc6ce35c5457
+  spec:
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchFields:
+            - key: metadata.name
+              operator: In
+              values:
+              - worker2
+    containers:
+    - args:
+      - --port=7472
+      - --log-level=info
+      env:
+      - name: METALLB_NODE_NAME
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: spec.nodeName
+      - name: METALLB_POD_NAME
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: metadata.name
+      - name: METALLB_HOST
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: status.hostIP
+      - name: METALLB_ML_BIND_ADDR
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: status.podIP
+      - name: METALLB_ML_LABELS
+        value: app=metallb,component=speaker
+      - name: METALLB_ML_SECRET_KEY_PATH
+        value: /etc/ml_secret_key
+      image: nexus.local:8122/metallb/speaker:v0.14.9
+      imagePullPolicy: IfNotPresent
+      livenessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /metrics
+          port: monitoring
+          scheme: HTTP
+        initialDelaySeconds: 10
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      name: speaker
+      ports:
+      - containerPort: 7472
+        hostPort: 7472
+        name: monitoring
+        protocol: TCP
+      - containerPort: 7946
+        hostPort: 7946
+        name: memberlist-tcp
+        protocol: TCP
+      - containerPort: 7946
+        hostPort: 7946
+        name: memberlist-udp
+        protocol: UDP
+      readinessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /metrics
+          port: monitoring
+          scheme: HTTP
+        initialDelaySeconds: 10
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      resources: {}
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          add:
+          - NET_RAW
+          drop:
+          - ALL
+        readOnlyRootFilesystem: true
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /etc/ml_secret_key
+        name: memberlist
+        readOnly: true
+      - mountPath: /etc/metallb
+        name: metallb-excludel2
+        readOnly: true
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-gs2h6
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    hostNetwork: true
+    nodeName: worker2
+    nodeSelector:
+      kubernetes.io/os: linux
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext: {}
+    serviceAccount: speaker
+    serviceAccountName: speaker
+    terminationGracePeriodSeconds: 2
+    tolerations:
+    - effect: NoSchedule
+      key: node-role.kubernetes.io/master
+      operator: Exists
+    - effect: NoSchedule
+      key: node-role.kubernetes.io/control-plane
+      operator: Exists
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+    - effect: NoSchedule
+      key: node.kubernetes.io/disk-pressure
+      operator: Exists
+    - effect: NoSchedule
+      key: node.kubernetes.io/memory-pressure
+      operator: Exists
+    - effect: NoSchedule
+      key: node.kubernetes.io/pid-pressure
+      operator: Exists
+    - effect: NoSchedule
+      key: node.kubernetes.io/unschedulable
+      operator: Exists
+    - effect: NoSchedule
+      key: node.kubernetes.io/network-unavailable
+      operator: Exists
+    volumes:
+    - name: memberlist
+      secret:
+        defaultMode: 420
+        secretName: memberlist
+    - configMap:
+        defaultMode: 256
+        name: metallb-excludel2
+      name: metallb-excludel2
+    - name: kube-api-access-gs2h6
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            expirationSeconds: 3607
+            path: token
+        - configMap:
+            items:
+            - key: ca.crt
+              path: ca.crt
+            name: kube-root-ca.crt
+        - downwardAPI:
+            items:
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+              path: namespace
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2025-01-18T19:54:05Z"
+      status: "True"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2025-01-13T09:39:54Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2025-01-18T19:55:03Z"
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2025-01-18T19:55:03Z"
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2025-01-13T09:39:54Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: containerd://0887952f52269996f94cfd55937d1a8b0a4657486b10ed1d97321b9b5046b8b5
+      image: nexus.local:8122/metallb/speaker:v0.14.9
+      imageID: nexus.local:8122/metallb/speaker@sha256:b09a1dfcf330938950b65115cd58f6989108c0c21d3c096040e7fe9a25a92993
+      lastState:
+        terminated:
+          containerID: containerd://078d4a1cffcf1c7c6a7a8e577e67586c43efb23f63cd55123400aabc8a52cbff
+          exitCode: 1
+          finishedAt: "2025-01-18T19:54:35Z"
+          reason: Error
+          startedAt: "2025-01-18T19:54:05Z"
+      name: speaker
+      ready: true
+      restartCount: 8
+      started: true
+      state:
+        running:
+          startedAt: "2025-01-18T19:54:51Z"
+      volumeMounts:
+      - mountPath: /etc/ml_secret_key
+        name: memberlist
+        readOnly: true
+        recursiveReadOnly: Disabled
+      - mountPath: /etc/metallb
+        name: metallb-excludel2
+        readOnly: true
+        recursiveReadOnly: Disabled
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-gs2h6
+        readOnly: true
+        recursiveReadOnly: Disabled
+    hostIP: 10.0.1.52
+    hostIPs:
+    - ip: 10.0.1.52
+    phase: Running
+    podIP: 10.0.1.52
+    podIPs:
+    - ip: 10.0.1.52
+    qosClass: BestEffort
+    startTime: "2025-01-13T09:39:54Z"
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      prometheus.io/port: "7472"
+      prometheus.io/scrape: "true"
+    creationTimestamp: "2025-01-13T09:39:54Z"
+    generateName: speaker-
+    labels:
+      app: metallb
+      component: speaker
+      controller-revision-hash: 6f9d8f7b7d
+      pod-template-generation: "1"
+    name: speaker-qs6gd
+    namespace: metallb-system
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DaemonSet
+      name: speaker
+      uid: 3cf4f4b2-3013-4b00-92c6-c9d71f7756e5
+    resourceVersion: "754837"
+    uid: bd9e6fbf-bf34-4341-839c-add37eabc9b4
+  spec:
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchFields:
+            - key: metadata.name
+              operator: In
+              values:
+              - worker1
+    containers:
+    - args:
+      - --port=7472
+      - --log-level=info
+      env:
+      - name: METALLB_NODE_NAME
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: spec.nodeName
+      - name: METALLB_POD_NAME
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: metadata.name
+      - name: METALLB_HOST
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: status.hostIP
+      - name: METALLB_ML_BIND_ADDR
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: status.podIP
+      - name: METALLB_ML_LABELS
+        value: app=metallb,component=speaker
+      - name: METALLB_ML_SECRET_KEY_PATH
+        value: /etc/ml_secret_key
+      image: nexus.local:8122/metallb/speaker:v0.14.9
+      imagePullPolicy: IfNotPresent
+      livenessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /metrics
+          port: monitoring
+          scheme: HTTP
+        initialDelaySeconds: 10
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      name: speaker
+      ports:
+      - containerPort: 7472
+        hostPort: 7472
+        name: monitoring
+        protocol: TCP
+      - containerPort: 7946
+        hostPort: 7946
+        name: memberlist-tcp
+        protocol: TCP
+      - containerPort: 7946
+        hostPort: 7946
+        name: memberlist-udp
+        protocol: UDP
+      readinessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /metrics
+          port: monitoring
+          scheme: HTTP
+        initialDelaySeconds: 10
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      resources: {}
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          add:
+          - NET_RAW
+          drop:
+          - ALL
+        readOnlyRootFilesystem: true
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /etc/ml_secret_key
+        name: memberlist
+        readOnly: true
+      - mountPath: /etc/metallb
+        name: metallb-excludel2
+        readOnly: true
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-scj29
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    hostNetwork: true
+    nodeName: worker1
+    nodeSelector:
+      kubernetes.io/os: linux
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext: {}
+    serviceAccount: speaker
+    serviceAccountName: speaker
+    terminationGracePeriodSeconds: 2
+    tolerations:
+    - effect: NoSchedule
+      key: node-role.kubernetes.io/master
+      operator: Exists
+    - effect: NoSchedule
+      key: node-role.kubernetes.io/control-plane
+      operator: Exists
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+    - effect: NoSchedule
+      key: node.kubernetes.io/disk-pressure
+      operator: Exists
+    - effect: NoSchedule
+      key: node.kubernetes.io/memory-pressure
+      operator: Exists
+    - effect: NoSchedule
+      key: node.kubernetes.io/pid-pressure
+      operator: Exists
+    - effect: NoSchedule
+      key: node.kubernetes.io/unschedulable
+      operator: Exists
+    - effect: NoSchedule
+      key: node.kubernetes.io/network-unavailable
+      operator: Exists
+    volumes:
+    - name: memberlist
+      secret:
+        defaultMode: 420
+        secretName: memberlist
+    - configMap:
+        defaultMode: 256
+        name: metallb-excludel2
+      name: metallb-excludel2
+    - name: kube-api-access-scj29
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            expirationSeconds: 3607
+            path: token
+        - configMap:
+            items:
+            - key: ca.crt
+              path: ca.crt
+            name: kube-root-ca.crt
+        - downwardAPI:
+            items:
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+              path: namespace
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2025-01-18T19:54:08Z"
+      status: "True"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2025-01-13T09:39:54Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2025-01-18T19:55:12Z"
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2025-01-18T19:55:12Z"
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2025-01-13T09:39:54Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: containerd://eeeb8d7cfd30d61d0731d77a2ec08af01e6548193ad43adbae855f0f50f44e14
+      image: nexus.local:8122/metallb/speaker:v0.14.9
+      imageID: nexus.local:8122/metallb/speaker@sha256:b09a1dfcf330938950b65115cd58f6989108c0c21d3c096040e7fe9a25a92993
+      lastState:
+        terminated:
+          containerID: containerd://bae7302c1195785e070439d57f2d638d3eacaf8d18cee6f7ee1637b37bcf8ee5
+          exitCode: 1
+          finishedAt: "2025-01-18T19:54:39Z"
+          reason: Error
+          startedAt: "2025-01-18T19:54:08Z"
+      name: speaker
+      ready: true
+      restartCount: 11
+      started: true
+      state:
+        running:
+          startedAt: "2025-01-18T19:55:02Z"
+      volumeMounts:
+      - mountPath: /etc/ml_secret_key
+        name: memberlist
+        readOnly: true
+        recursiveReadOnly: Disabled
+      - mountPath: /etc/metallb
+        name: metallb-excludel2
+        readOnly: true
+        recursiveReadOnly: Disabled
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-scj29
+        readOnly: true
+        recursiveReadOnly: Disabled
+    hostIP: 10.0.1.51
+    hostIPs:
+    - ip: 10.0.1.51
+    phase: Running
+    podIP: 10.0.1.51
+    podIPs:
+    - ip: 10.0.1.51
+    qosClass: BestEffort
+    startTime: "2025-01-13T09:39:54Z"
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"name":"metallb-webhook-service","namespace":"metallb-system"},"spec":{"ports":[{"port":443,"targetPort":9443}],"selector":{"component":"controller"}}}
+    creationTimestamp: "2025-01-13T09:32:39Z"
+    name: metallb-webhook-service
+    namespace: metallb-system
+    resourceVersion: "7815"
+    uid: 6358571b-4347-4b26-8250-d13cf3944d82
+  spec:
+    clusterIP: 10.109.20.202
+    clusterIPs:
+    - 10.109.20.202
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - port: 443
+      protocol: TCP
+      targetPort: 9443
+    selector:
+      component: controller
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: apps/v1
+  kind: DaemonSet
+  metadata:
+    annotations:
+      deprecated.daemonset.template.generation: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"DaemonSet","metadata":{"annotations":{},"labels":{"app":"metallb","component":"speaker"},"name":"speaker","namespace":"metallb-system"},"spec":{"selector":{"matchLabels":{"app":"metallb","component":"speaker"}},"template":{"metadata":{"annotations":{"prometheus.io/port":"7472","prometheus.io/scrape":"true"},"labels":{"app":"metallb","component":"speaker"}},"spec":{"containers":[{"args":["--port=7472","--log-level=info"],"env":[{"name":"METALLB_NODE_NAME","valueFrom":{"fieldRef":{"fieldPath":"spec.nodeName"}}},{"name":"METALLB_POD_NAME","valueFrom":{"fieldRef":{"fieldPath":"metadata.name"}}},{"name":"METALLB_HOST","valueFrom":{"fieldRef":{"fieldPath":"status.hostIP"}}},{"name":"METALLB_ML_BIND_ADDR","valueFrom":{"fieldRef":{"fieldPath":"status.podIP"}}},{"name":"METALLB_ML_LABELS","value":"app=metallb,component=speaker"},{"name":"METALLB_ML_SECRET_KEY_PATH","value":"/etc/ml_secret_key"}],"image":"nexus.local:8122/metallb/speaker:v0.14.9","livenessProbe":{"failureThreshold":3,"httpGet":{"path":"/metrics","port":"monitoring"},"initialDelaySeconds":10,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1},"name":"speaker","ports":[{"containerPort":7472,"name":"monitoring"},{"containerPort":7946,"name":"memberlist-tcp"},{"containerPort":7946,"name":"memberlist-udp","protocol":"UDP"}],"readinessProbe":{"failureThreshold":3,"httpGet":{"path":"/metrics","port":"monitoring"},"initialDelaySeconds":10,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"add":["NET_RAW"],"drop":["ALL"]},"readOnlyRootFilesystem":true},"volumeMounts":[{"mountPath":"/etc/ml_secret_key","name":"memberlist","readOnly":true},{"mountPath":"/etc/metallb","name":"metallb-excludel2","readOnly":true}]}],"hostNetwork":true,"nodeSelector":{"kubernetes.io/os":"linux"},"serviceAccountName":"speaker","terminationGracePeriodSeconds":2,"tolerations":[{"effect":"NoSchedule","key":"node-role.kubernetes.io/master","operator":"Exists"},{"effect":"NoSchedule","key":"node-role.kubernetes.io/control-plane","operator":"Exists"}],"volumes":[{"name":"memberlist","secret":{"defaultMode":420,"secretName":"memberlist"}},{"configMap":{"defaultMode":256,"name":"metallb-excludel2"},"name":"metallb-excludel2"}]}}}}
+    creationTimestamp: "2025-01-13T09:39:54Z"
+    generation: 1
+    labels:
+      app: metallb
+      component: speaker
+    name: speaker
+    namespace: metallb-system
+    resourceVersion: "755114"
+    uid: 3cf4f4b2-3013-4b00-92c6-c9d71f7756e5
+  spec:
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: metallb
+        component: speaker
+    template:
+      metadata:
+        annotations:
+          prometheus.io/port: "7472"
+          prometheus.io/scrape: "true"
+        creationTimestamp: null
+        labels:
+          app: metallb
+          component: speaker
+      spec:
+        containers:
+        - args:
+          - --port=7472
+          - --log-level=info
+          env:
+          - name: METALLB_NODE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.nodeName
+          - name: METALLB_POD_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+          - name: METALLB_HOST
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: status.hostIP
+          - name: METALLB_ML_BIND_ADDR
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: status.podIP
+          - name: METALLB_ML_LABELS
+            value: app=metallb,component=speaker
+          - name: METALLB_ML_SECRET_KEY_PATH
+            value: /etc/ml_secret_key
+          image: nexus.local:8122/metallb/speaker:v0.14.9
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /metrics
+              port: monitoring
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: speaker
+          ports:
+          - containerPort: 7472
+            name: monitoring
+            protocol: TCP
+          - containerPort: 7946
+            name: memberlist-tcp
+            protocol: TCP
+          - containerPort: 7946
+            name: memberlist-udp
+            protocol: UDP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /metrics
+              port: monitoring
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources: {}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              add:
+              - NET_RAW
+              drop:
+              - ALL
+            readOnlyRootFilesystem: true
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /etc/ml_secret_key
+            name: memberlist
+            readOnly: true
+          - mountPath: /etc/metallb
+            name: metallb-excludel2
+            readOnly: true
+        dnsPolicy: ClusterFirst
+        hostNetwork: true
+        nodeSelector:
+          kubernetes.io/os: linux
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: speaker
+        serviceAccountName: speaker
+        terminationGracePeriodSeconds: 2
+        tolerations:
+        - effect: NoSchedule
+          key: node-role.kubernetes.io/master
+          operator: Exists
+        - effect: NoSchedule
+          key: node-role.kubernetes.io/control-plane
+          operator: Exists
+        volumes:
+        - name: memberlist
+          secret:
+            defaultMode: 420
+            secretName: memberlist
+        - configMap:
+            defaultMode: 256
+            name: metallb-excludel2
+          name: metallb-excludel2
+    updateStrategy:
+      rollingUpdate:
+        maxSurge: 0
+        maxUnavailable: 1
+      type: RollingUpdate
+  status:
+    currentNumberScheduled: 4
+    desiredNumberScheduled: 4
+    numberAvailable: 4
+    numberMisscheduled: 0
+    numberReady: 4
+    observedGeneration: 1
+    updatedNumberScheduled: 4
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"app":"metallb","component":"controller"},"name":"controller","namespace":"metallb-system"},"spec":{"revisionHistoryLimit":3,"selector":{"matchLabels":{"app":"metallb","component":"controller"}},"template":{"metadata":{"annotations":{"prometheus.io/port":"7472","prometheus.io/scrape":"true"},"labels":{"app":"metallb","component":"controller"}},"spec":{"containers":[{"args":["--port=7472","--log-level=info","--tls-min-version=VersionTLS12"],"env":[{"name":"METALLB_ML_SECRET_NAME","value":"memberlist"},{"name":"METALLB_DEPLOYMENT","value":"controller"}],"image":"nexus.local:8122/metallb/controller:v0.14.9","livenessProbe":{"failureThreshold":3,"httpGet":{"path":"/metrics","port":"monitoring"},"initialDelaySeconds":10,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1},"name":"controller","ports":[{"containerPort":7472,"name":"monitoring"},{"containerPort":9443,"name":"webhook-server","protocol":"TCP"}],"readinessProbe":{"failureThreshold":3,"httpGet":{"path":"/metrics","port":"monitoring"},"initialDelaySeconds":10,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["all"]},"readOnlyRootFilesystem":true},"volumeMounts":[{"mountPath":"/tmp/k8s-webhook-server/serving-certs","name":"cert","readOnly":true}]}],"nodeSelector":{"kubernetes.io/os":"linux"},"securityContext":{"fsGroup":65534,"runAsNonRoot":true,"runAsUser":65534},"serviceAccountName":"controller","terminationGracePeriodSeconds":0,"volumes":[{"name":"cert","secret":{"defaultMode":420,"secretName":"metallb-webhook-cert"}}]}}}}
+    creationTimestamp: "2025-01-13T09:39:53Z"
+    generation: 1
+    labels:
+      app: metallb
+      component: controller
+    name: controller
+    namespace: metallb-system
+    resourceVersion: "754070"
+    uid: 17196ae6-d30b-43ca-b1d5-141d4312e84a
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 3
+    selector:
+      matchLabels:
+        app: metallb
+        component: controller
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          prometheus.io/port: "7472"
+          prometheus.io/scrape: "true"
+        creationTimestamp: null
+        labels:
+          app: metallb
+          component: controller
+      spec:
+        containers:
+        - args:
+          - --port=7472
+          - --log-level=info
+          - --tls-min-version=VersionTLS12
+          env:
+          - name: METALLB_ML_SECRET_NAME
+            value: memberlist
+          - name: METALLB_DEPLOYMENT
+            value: controller
+          image: nexus.local:8122/metallb/controller:v0.14.9
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /metrics
+              port: monitoring
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: controller
+          ports:
+          - containerPort: 7472
+            name: monitoring
+            protocol: TCP
+          - containerPort: 9443
+            name: webhook-server
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /metrics
+              port: monitoring
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources: {}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - all
+            readOnlyRootFilesystem: true
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /tmp/k8s-webhook-server/serving-certs
+            name: cert
+            readOnly: true
+        dnsPolicy: ClusterFirst
+        nodeSelector:
+          kubernetes.io/os: linux
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext:
+          fsGroup: 65534
+          runAsNonRoot: true
+          runAsUser: 65534
+        serviceAccount: controller
+        serviceAccountName: controller
+        terminationGracePeriodSeconds: 0
+        volumes:
+        - name: cert
+          secret:
+            defaultMode: 420
+            secretName: metallb-webhook-cert
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2025-01-13T09:39:53Z"
+      lastUpdateTime: "2025-01-13T09:40:05Z"
+      message: ReplicaSet "controller-5cd588c68b" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2025-01-18T19:54:33Z"
+      lastUpdateTime: "2025-01-18T19:54:33Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "1"
+      deployment.kubernetes.io/max-replicas: "2"
+      deployment.kubernetes.io/revision: "1"
+    creationTimestamp: "2025-01-13T09:39:53Z"
+    generation: 1
+    labels:
+      app: metallb
+      component: controller
+      pod-template-hash: 5cd588c68b
+    name: controller-5cd588c68b
+    namespace: metallb-system
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: controller
+      uid: 17196ae6-d30b-43ca-b1d5-141d4312e84a
+    resourceVersion: "754068"
+    uid: 3e074520-bfd4-4297-8c56-db1e021a5934
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: metallb
+        component: controller
+        pod-template-hash: 5cd588c68b
+    template:
+      metadata:
+        annotations:
+          prometheus.io/port: "7472"
+          prometheus.io/scrape: "true"
+        creationTimestamp: null
+        labels:
+          app: metallb
+          component: controller
+          pod-template-hash: 5cd588c68b
+      spec:
+        containers:
+        - args:
+          - --port=7472
+          - --log-level=info
+          - --tls-min-version=VersionTLS12
+          env:
+          - name: METALLB_ML_SECRET_NAME
+            value: memberlist
+          - name: METALLB_DEPLOYMENT
+            value: controller
+          image: nexus.local:8122/metallb/controller:v0.14.9
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /metrics
+              port: monitoring
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: controller
+          ports:
+          - containerPort: 7472
+            name: monitoring
+            protocol: TCP
+          - containerPort: 9443
+            name: webhook-server
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /metrics
+              port: monitoring
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources: {}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - all
+            readOnlyRootFilesystem: true
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /tmp/k8s-webhook-server/serving-certs
+            name: cert
+            readOnly: true
+        dnsPolicy: ClusterFirst
+        nodeSelector:
+          kubernetes.io/os: linux
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext:
+          fsGroup: 65534
+          runAsNonRoot: true
+          runAsUser: 65534
+        serviceAccount: controller
+        serviceAccountName: controller
+        terminationGracePeriodSeconds: 0
+        volumes:
+        - name: cert
+          secret:
+            defaultMode: 420
+            secretName: metallb-webhook-cert
+  status:
+    availableReplicas: 1
+    fullyLabeledReplicas: 1
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+kind: List
+metadata:
+  resourceVersion: ""

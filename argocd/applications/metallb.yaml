@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: metallb
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/BenRachmiel/k8s.local.git
+    targetRevision: HEAD
+    path: infrastructure/networking/metallb
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: metallb-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      jsonPointers:
+        - /metadata/annotations/deployment.kubernetes.io/revision
+        - /status
+    - group: apps
+      kind: DaemonSet
+      jsonPointers:
+        - /metadata/annotations/deprecated.daemonset.template.generation
+        - /status
