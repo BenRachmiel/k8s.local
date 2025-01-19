@@ -1,3 +1,4 @@
+# argocd/applications/metallb.yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -19,13 +20,31 @@ spec:
     syncOptions:
       - CreateNamespace=true
   ignoreDifferences:
+    # For all resources
+    - group: "*"
+      kind: "*"
+      jsonPointers:
+        - /metadata/resourceVersion
+        - /metadata/uid
+        - /metadata/generation
+        - /metadata/annotations/kubectl.kubernetes.io/last-applied-configuration
+        - /status
+    # Deployment specific
     - group: apps
       kind: Deployment
       jsonPointers:
         - /metadata/annotations/deployment.kubernetes.io/revision
-        - /status
+        - /metadata/labels/app.kubernetes.io/instance
+    # DaemonSet specific
     - group: apps
       kind: DaemonSet
       jsonPointers:
         - /metadata/annotations/deprecated.daemonset.template.generation
-        - /status
+        - /metadata/labels/app.kubernetes.io/instance
+    # Service specific
+    - group: ""
+      kind: Service
+      jsonPointers:
+        - /spec/clusterIP
+        - /spec/clusterIPs
+        - /metadata/labels/app.kubernetes.io/instance
