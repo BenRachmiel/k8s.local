@@ -13,7 +13,7 @@ spec:
   tls:
   - hosts:
     - ceph.k8s.local
-    secretName: ceph-dashboard-cert
+    secretName: ceph-dashboard-tls
   rules:
   - host: ceph.k8s.local
     http:
