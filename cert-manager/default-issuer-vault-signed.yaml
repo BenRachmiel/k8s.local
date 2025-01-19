@@ -4,4 +4,4 @@ metadata:
   name: default-issuer
 spec:
   ca:
-    secretName: cert-manager-ca  # This is the secret we created with your intermediate CA
+    secretName: cert-manager-ca
