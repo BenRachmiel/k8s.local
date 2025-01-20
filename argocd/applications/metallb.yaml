@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/BenRachmiel/k8s.local.git
     targetRevision: HEAD
-    path: infrastructure/networking/metallb
+    path: metallb
   destination:
     server: https://kubernetes.default.svc
     namespace: metallb-system
@@ -19,7 +19,6 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - RespectIgnoreDifferences=true  # Respect the ignore differences configuration
-      - Replace=false  # Don't replace existing resources
   ignoreDifferences:
     # For all resources
     - group: "*"
