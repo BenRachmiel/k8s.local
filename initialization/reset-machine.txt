@@ -1,0 +1,1 @@
+sudo kubeadm reset; sudo systemctl stop kubelet; sudo rm -rf /var/lib/cni/; sudo rm -rf /var/lib/kubelet/*; sudo ip link set cni0 down; sudo ip link set flannel.1 down; sudo rm -rf /etc/cni/
