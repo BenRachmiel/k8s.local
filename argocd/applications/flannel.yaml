@@ -6,8 +6,8 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/BenRachmiel/k8s.local.git
-    targetRevision: HEAD
+    repoURL: https://gitlab.local/bbr/k8s.local
+    targetRevision: main
     path: flannel
   destination:
     server: https://kubernetes.default.svc

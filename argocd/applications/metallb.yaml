@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/BenRachmiel/k8s.local.git
+    repoURL: https://gitlab.local/bbr/k8s.local
     targetRevision: HEAD
     path: metallb
   destination:
