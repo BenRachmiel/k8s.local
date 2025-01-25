@@ -17,26 +17,26 @@ cephClusterSpec:
     nodes:
     - name: "worker1"
       devices:
-      - name: "/dev/sdb"  # Replace with your actual NVMe device
+      - name: "/dev/sdb"
       config:
         storeType: bluestore
         crushRoot: "worker1"
     - name: "worker2"
       devices:
-      - name: "/dev/sdb"  # Replace with your actual NVMe device
+      - name: "/dev/sdb"
       config:
         storeType: bluestore
         crushRoot: "worker2"
-    - name: "workerhdd1"
+    - name: "worker3"
       devices:
-      - name: "/dev/sdb"  # Replace with your actual HDD device
+      - name: "/dev/sdb"
       config:
         storeType: bluestore
-        crushRoot: "workerhdd1"
+        crushRoot: "worker3"
 
 # Storage class definitions
 cephBlockPools:
-- name: nvme-pool-worker1
+- name: hdd-pool
   spec:
     failureDomain: host
     crushRoot: "worker1"
@@ -44,13 +44,12 @@ cephBlockPools:
       size: 1  # Local storage
   storageClass:
     enabled: true
-    name: rook-ceph-nvme1
+    name: rook-ceph-hdd
     isDefault: false
     reclaimPolicy: Delete
     allowVolumeExpansion: true
     parameters:
-      pool: nvme-pool-worker1
-      crushRoot: "worker1"
+      pool: rook-ceph-hdd
       imageFormat: "2"
       imageFeatures: layering
 
@@ -72,20 +71,21 @@ cephBlockPools:
       imageFormat: "2"
       imageFeatures: layering
 
-- name: hdd-pool
+- name: nvme-pool-worker3
   spec:
     failureDomain: host
-    crushRoot: "workerhdd1"
+    crushRoot: "worker3"
     replicated:
       size: 1
   storageClass:
     enabled: true
-    name: rook-ceph-hdd
+    name: rook-ceph-nvme3
     isDefault: false
     reclaimPolicy: Delete
     allowVolumeExpansion: true
     parameters:
-      pool: hdd-pool
+      pool: nvme-pool-worker3
+      crushRoot: "worker3"
       imageFormat: "2"
       imageFeatures: layering
 
