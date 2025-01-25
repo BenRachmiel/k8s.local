@@ -165,7 +165,7 @@ spec:
         args:
         - --ip-masq
         - --kube-subnet-mgr
-        - --iface=ens18
+          #- --iface=ens18
         - --v=2
         resources:
           requests:
