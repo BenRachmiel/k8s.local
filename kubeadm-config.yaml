@@ -1,0 +1,11 @@
+apiVersion: kubeadm.k8s.io/v1beta3
+kind: ClusterConfiguration
+networking:
+  podSubnet: 172.16.0.0/16
+imageRepository: nexus.local:8122
+clusterName: kubernetes
+dns:
+  imageRepository: nexus.local:8122/coredns
+etcd:
+  local:
+    imageRepository: nexus.local:8122
