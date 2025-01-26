@@ -1,0 +1,22 @@
+# Get OSD IDs
+CEPH_TOOL_POD=$(kubectl -n rook-ceph get pods -l app=rook-ceph-tools -o name)
+kubectl -n rook-ceph exec -it $CEPH_TOOL_POD -- bash
+
+# Inside toolbox pod:
+# Tag HDD OSDs (assuming OSD 0 is HDD)
+ceph osd crush set-device-class hdd osd.0
+
+# Tag NVMe OSDs (assuming OSD 1-2 are NVMe)
+ceph osd crush set-device-class nvme osd.1 osd.2
+
+# HDD Rule (replicate across hosts)
+ceph osd crush rule create-replicated hdd-replicated default host hdd
+
+# NVMe Rule (local to OSD)
+ceph osd crush rule create-replicated nvme-local default osd nvme
+
+# HDD Pool
+ceph osd pool set hdd-pool crush_rule hdd-replicated
+
+# NVMe Pool
+ceph osd pool set nvme-pool crush_rule nvme-local
