@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: test-hdd-pvc
+  namespace: default  # Change this to your desired namespace
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi  # Request 1Gi of storage
+  storageClassName: rook-ceph-hdd  # Use the StorageClass for hdd-pool
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-hdd-pod
+  namespace: default  # Change this to your desired namespace
+spec:
+  containers:
+  - name: test-container
+    image: busybox  # Lightweight image for testing
+    command: ["sleep", "3600"]  # Keep the container running
+    volumeMounts:
+    - name: hdd-storage
+      mountPath: /data  # Mount the PVC to /data
+  volumes:
+  - name: hdd-storage
+    persistentVolumeClaim:
+      claimName: test-hdd-pvc  # Reference the PVC

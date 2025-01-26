@@ -1,0 +1,1 @@
+helm upgrade --install --create-namespace --namespace portainer portainer portainer/portainer -f values.yaml

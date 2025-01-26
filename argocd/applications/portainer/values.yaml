@@ -23,4 +23,4 @@ ingress:
         - portainer.k8s.local
 
 persistence:
-  storageClass: ceph-filesystem
+  storageClass: rook-ceph-hdd

@@ -17,77 +17,70 @@ cephClusterSpec:
     nodes:
     - name: "worker1"
       devices:
-      - name: "/dev/sdb"
+      - name: "/dev/sdb"  # HDD device
       config:
         storeType: bluestore
-        crushRoot: "worker1"
     - name: "worker2"
       devices:
-      - name: "/dev/sdb"
+      - name: "/dev/sdb"  # NVMe device (adjust to match your NVMe path)
       config:
         storeType: bluestore
-        crushRoot: "worker2"
     - name: "worker3"
       devices:
-      - name: "/dev/sdb"
+      - name: "/dev/sdb"  # NVMe device (adjust to match your NVMe path)
       config:
         storeType: bluestore
-        crushRoot: "worker3"
 
 # Storage class definitions
 cephBlockPools:
+# HDD pool (replicated across 3 hosts)
 - name: hdd-pool
   spec:
-    failureDomain: host
-    crushRoot: "worker1"
+    failureDomain: osd  # Replicate across hosts
     replicated:
-      size: 1  # Local storage
+      size: 1  # Requires at least 3 OSDs on different hosts
   storageClass:
     enabled: true
     name: rook-ceph-hdd
-    isDefault: false
     reclaimPolicy: Delete
     allowVolumeExpansion: true
+    volumeBindingMode: Immediate
     parameters:
-      pool: rook-ceph-hdd
+      pool: hdd-pool
       imageFormat: "2"
       imageFeatures: layering
+      csi.storage.k8s.io/provisioner-secret-name: rook-csi-rbd-provisioner
+      csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
+      csi.storage.k8s.io/controller-expand-secret-name: rook-csi-rbd-provisioner
+      csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
+      csi.storage.k8s.io/node-stage-secret-name: rook-csi-rbd-node
+      csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
 
-- name: nvme-pool-worker2
+# Single NVMe storage class (non-replicated, localized to worker2/worker3)
+- name: nvme-pool
   spec:
-    failureDomain: host
-    crushRoot: "worker2"
+    failureDomain: osd  # Store on a single OSD
     replicated:
-      size: 1
+      size: 1  # No replication
+    # Optional: Use deviceClass to target NVMe OSDs
+    # (Requires tagging NVMe OSDs with a device class; see notes below)
   storageClass:
     enabled: true
-    name: rook-ceph-nvme2
+    name: rook-ceph-nvme-local
     isDefault: false
     reclaimPolicy: Delete
     allowVolumeExpansion: true
+    volumeBindingMode: WaitForFirstConsumer
     parameters:
-      pool: nvme-pool-worker2
-      crushRoot: "worker2"
+      pool: nvme-pool
       imageFormat: "2"
       imageFeatures: layering
-
-- name: nvme-pool-worker3
-  spec:
-    failureDomain: host
-    crushRoot: "worker3"
-    replicated:
-      size: 1
-  storageClass:
-    enabled: true
-    name: rook-ceph-nvme3
-    isDefault: false
-    reclaimPolicy: Delete
-    allowVolumeExpansion: true
-    parameters:
-      pool: nvme-pool-worker3
-      crushRoot: "worker3"
-      imageFormat: "2"
-      imageFeatures: layering
+      csi.storage.k8s.io/provisioner-secret-name: rook-csi-rbd-provisioner
+      csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
+      csi.storage.k8s.io/controller-expand-secret-name: rook-csi-rbd-provisioner
+      csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
+      csi.storage.k8s.io/node-stage-secret-name: rook-csi-rbd-node
+      csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
 
 # Enable monitoring
 monitoring:
