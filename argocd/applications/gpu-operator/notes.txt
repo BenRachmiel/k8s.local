@@ -1,0 +1,2 @@
+Important: won't work on debian if drivers aren't installed on all nodes with gpus (apt install nvidia-driver)
+helm install --wait --generate-name -n gpu-operator --create-namespace -f nvidia-operator-values.yaml nvidia/gpu-operator --version=v24.9.1
