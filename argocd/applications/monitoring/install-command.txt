@@ -1,1 +1,3 @@
 helm install -n monitoring --create-namespace prometheus -f monitoring-stack-values.yaml monitoring/kube-prometheus-stack
+helm install -n monitoring --create-namespace loki grafana/loki -f loki-values.yaml
+helm install -n monitoring promtail -f promtail-values.yaml grafana/promtail
