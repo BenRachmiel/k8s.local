@@ -17,17 +17,20 @@ cephClusterSpec:
     nodes:
     - name: "worker1"
       devices:
-      - name: "/dev/sdb"  # HDD device
+      - name: "/dev/vdb"
+      - name: "/dev/vdc"
       config:
         storeType: bluestore
     - name: "worker2"
       devices:
-      - name: "/dev/sdb"  # NVMe device (adjust to match your NVMe path)
+      - name: "/dev/vdb"
+      - name: "/dev/vdc"
       config:
         storeType: bluestore
     - name: "worker3"
       devices:
-      - name: "/dev/sdb"  # NVMe device (adjust to match your NVMe path)
+      - name: "/dev/vdb"
+      - name: "/dev/vdc"
       config:
         storeType: bluestore
 
@@ -38,7 +41,7 @@ cephBlockPools:
   spec:
     failureDomain: osd  # Replicate across hosts
     replicated:
-      size: 1  # Requires at least 3 OSDs on different hosts
+      size: 2  # Requires at least 3 OSDs on different hosts
   storageClass:
     enabled: true
     name: rook-ceph-hdd
@@ -61,7 +64,7 @@ cephBlockPools:
   spec:
     failureDomain: osd  # Store on a single OSD
     replicated:
-      size: 1  # No replication
+      size: 2  # No replication
     # Optional: Use deviceClass to target NVMe OSDs
     # (Requires tagging NVMe OSDs with a device class; see notes below)
   storageClass:

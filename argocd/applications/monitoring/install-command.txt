@@ -1,0 +1,1 @@
+helm install -n monitoring --create-namespace prometheus -f monitoring-stack-values.yaml monitoring/kube-prometheus-stack
