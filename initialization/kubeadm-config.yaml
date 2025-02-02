@@ -4,7 +4,7 @@ networking:
   podSubnet: 172.16.0.0/16
 imageRepository: nexus.local:8122
 clusterName: kubernetes
-controlPlaneEndpoint: 10.0.1.4:6443
+controlPlaneEndpoint: 192.168.3.1:6443
 dns:
   imageRepository: nexus.local:8122/coredns
 etcd:
